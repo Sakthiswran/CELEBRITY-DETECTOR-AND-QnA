@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: llmops-app
-        image: us-central1-docker.pkg.dev/news-reporter-ai-agent-465603/llmops-repo/llmops-app:latest
+        image: us-central1-docker.pkg.dev/neat-chain-473003-a2/llmops-repo/llmops-app:latest
         ports:
         - containerPort: 5000
         env:
