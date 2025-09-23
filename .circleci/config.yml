@@ -1,0 +1,97 @@
+version: 2.1
+
+executors:
+  docker-executor:
+    docker:
+      - image: google/cloud-sdk:latest
+    working_directory: ~/repo
+
+jobs:
+  checkout_code:
+    executor: docker-executor
+    steps:
+      - checkout
+
+  build_docker_image:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install Docker CLI
+          command: |
+            apt-get update && apt-get install -y docker.io
+      - run:
+          name: Authenticate with Google Cloud
+          command: |
+            echo "$GCLOUD_SERVICE_KEY" | base64 --decode > gcp-key.json
+            gcloud auth activate-service-account --key-file=gcp-key.json
+            gcloud auth configure-docker us-central1-docker.pkg.dev --quiet || gcloud auth configure-docker --quiet
+      - run:
+          name: Build and Push Image (SHA tag + latest)
+          command: |
+            set -euo pipefail
+
+            # ----- Define Artifact Registry pieces -----
+            REGISTRY_HOST="us-central1-docker.pkg.dev"
+            AR_REPO="llmops-repo"
+            IMAGE_NAME="llmops-app"
+            SHA_TAG="${CIRCLE_SHA1:-latest}"
+
+            # ----- Validate & normalize project id -----
+            GOOGLE_PROJECT_ID_TRIMMED="$(printf "%s" "$GOOGLE_PROJECT_ID" | tr -d '\n\r' )"
+            PROJECT_ID_LC="${GOOGLE_PROJECT_ID_TRIMMED,,}"
+            if [ -z "$PROJECT_ID_LC" ]; then
+              echo "ERROR: GOOGLE_PROJECT_ID is empty." >&2; exit 1
+            fi
+            if ! [[ "$PROJECT_ID_LC" =~ ^[a-z0-9-]+$ ]]; then
+              echo "ERROR: GOOGLE_PROJECT_ID must be lowercase [a-z0-9-]. Got: '$PROJECT_ID_LC'" >&2; exit 1
+            fi
+
+            # ----- Compose full image references (SHA and latest) -----
+            IMAGE_SHA="${REGISTRY_HOST}/${PROJECT_ID_LC}/${AR_REPO}/${IMAGE_NAME}:${SHA_TAG}"
+            IMAGE_LATEST="${REGISTRY_HOST}/${PROJECT_ID_LC}/${AR_REPO}/${IMAGE_NAME}:latest"
+
+            echo "Building image and pushing both tags:"
+            echo " - ${IMAGE_SHA}"
+            echo " - ${IMAGE_LATEST}"
+
+            # ----- Build once, tag twice, push both -----
+            docker build -t "${IMAGE_SHA}" -t "${IMAGE_LATEST}" .
+            docker push "${IMAGE_SHA}"
+            docker push "${IMAGE_LATEST}"
+
+  deploy_to_gke:
+    executor: docker-executor
+    steps:
+      - checkout
+      - run:
+          name: Authenticate with Google Cloud
+          command: |
+            echo "$GCLOUD_SERVICE_KEY" | base64 --decode > gcp-key.json
+            gcloud auth activate-service-account --key-file=gcp-key.json
+            gcloud auth configure-docker us-central1-docker.pkg.dev --quiet || gcloud auth configure-docker --quiet
+            echo "USE_GKE_GCLOUD_AUTH_PLUGIN=True" >> "$BASH_ENV"
+      - run:
+          name: Configure GKE
+          command: |
+            gcloud container clusters get-credentials "$GKE_CLUSTER" --region "$GOOGLE_COMPUTE_REGION" --project "$GOOGLE_PROJECT_ID"
+      - run:
+          name: Deploy to GKE
+          command: |
+            # Your manifest uses :latest; this now exists because we push it above
+            kubectl apply -f kubernetes-deployment.yaml --validate=false
+            kubectl rollout restart deployment llmops-app
+            kubectl rollout status deployment/llmops-app --timeout=5m
+
+workflows:
+  version: 2
+  deploy_pipeline:
+    jobs:
+      - checkout_code
+      - build_docker_image:
+          requires:
+            - checkout_code
+      - deploy_to_gke:
+          requires:
+            - build_docker_image

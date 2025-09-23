@@ -1,0 +1,5 @@
+# Secrets
+venv/
+.env
+gcp-key.json
+Celebrity_Detector_and_QA.egg-info

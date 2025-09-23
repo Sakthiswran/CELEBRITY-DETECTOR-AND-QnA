@@ -1,0 +1,76 @@
+version: 2.1 ##Circle CI Version
+
+## CicleCI is using Google Cloud SDK image using docker executer
+## It is fetching that image using the Docker, pulling that image and installing that image in our directory.
+executors:
+  docker-executor:
+    docker:
+      - image: google/cloud-sdk:latest
+    working_directory: ~/repo ## Whole code will be inside this
+
+jobs:
+  ## first job
+  ## checkout code from GitHub Repo -> Pulling your code from GitHub and using it inside the Google container
+  checkout_code:
+    executor: docker-executor
+    steps:
+      - checkout
+
+  ## Second Job
+  ## Building our Docker image. Then push to Google Artifact Registry
+  build_docker_image:
+    executor: docker-executor ## For building & pushing the image, we need Docker Executer
+    steps:
+      - checkout
+      - setup_remote_docker ## Gives permission to build Docker image inside CircleCI. Remotely accessing a Docker inside your CircleCI.
+      - run:
+          name: Authenticate with google cloud
+          ## Whole command section is for Authentication purpose
+          ## Encode GCP Key to base64 and store in the form of env. vir. inside CircleCI. Then we decode and again convert it to JSON.
+          ## We do this because we can't push GCP key to GitHub
+          ## 2nd Line: We use the gcp-key.json to activate our service account
+          ## 3rd Line: We configure it based on the region
+          command: |
+              echo "$GCLOUD_SERVICE_KEY" | base64 --decode > gcp-key.json
+              gcloud auth activate-service-account --key-file=gcp-key.json
+              gcloud auth configure-docker us-central1-docker.pkg.dev || gcloud auth configure-docker
+
+      - run:
+          name: Build and Push Image
+          command: |
+              docker build -t us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/llmops-repo/llmops-app:latest .
+              docker push us-central1-docker.pkg.dev/$GOOGLE_PROJECT_ID/llmops-repo/llmops-app:latest
+
+  deploy_to_gke:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker ## To run Docker commands
+      - run:
+          name: Authenticate with google cloud
+          command: |
+              echo "$GCLOUD_SERVICE_KEY" | base64 --decode > gcp-key.json
+              gcloud auth activate-service-account --key-file=gcp-key.json
+              gcloud auth configure-docker us-central1-docker.pkg.dev || gcloud auth configure-docker
+      
+      - run:
+          name: Configure GKE
+          command: |
+              gcloud container clusters get-credentials $GKE_CLUSTER --region $GOOGLE_COMPUTE_REGION --project $GOOGLE_PROJECT_ID
+      - run:
+          name: Deploy to GKE
+          command: |
+              kubectl apply -f kubernetes-deployment.yaml --validate=false
+              kubectl rollout restart deployment llmops-app
+
+workflows:
+  version: 2
+  deploy_pipeline:
+    jobs:
+      - checkout_code
+      - build_docker_image:
+          requires:
+            - checkout_code
+      - deploy_to_gke:
+          requires:
+            - build_docker_image
