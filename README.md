@@ -1,14 +1,23 @@
-🌟 Celebrity Detector and QnA 🎬🤖
+Perfect 🙂 Let’s make it more engaging with emojis while keeping it professional and fun for GitHub readers.
+
+Here’s your updated README content:
+
+---
+
+# 🌟 Celebrity Detector and QnA 🎬🤖
 
 The **Celebrity Detector and QnA** project allows you to upload a celebrity’s image 📸 and get their profile automatically. Once the profile is retrieved, you can ask natural language questions ❓ about the celebrity, and the system will provide contextual answers powered by AI ⚡.
 
+---
+
 ✨ Features:
 
-🧑‍🎤 Celebrity Detection → Upload an image and get details (name, profession, profile info, etc.).
-🗣️ QnA Engine → Ask questions about the detected celebrity and get accurate responses.
-☁️ Cloud Deployment → Fully containerized and deployed on **Google Kubernetes Engine (GKE)**.
-🔄 Automated CI/CD → Every code update triggers build, push, and deployment automatically.
+* 🧑‍🎤 Celebrity Detection → Upload an image and get details (name, profession, profile info, etc.).
+* 🗣️ QnA Engine → Ask questions about the detected celebrity and get accurate responses.
+* ☁️ Cloud Deployment → Fully containerized and deployed on **Google Kubernetes Engine (GKE)**.
+* 🔄 Automated CI/CD → Every code update triggers build, push, and deployment automatically.
 
+---
 
 🛠️ Tech Stack:
 
@@ -22,31 +31,35 @@ The **Celebrity Detector and QnA** project allows you to upload a celebrity’s 
 8. 📂 GCP GAR (Google Artifact Registry) → Stores Docker images
 9. 🚀 GCP GKE (Google Kubernetes Engine) → Runs the deployed app on Kubernetes cluster
 
+---
 
 ⚙️ Development Setup:
 
-📂 Project and API Setup
-🖼️ Image Handler Code
-🧑‍🎤 Celebrity Detector Code
-🤖 QnA Engine Code
-🛣️ Routes Code
-💻 Application Code
-
+* 📂 Project and API Setup
+* 🖼️ Image Handler Code
+* 🧑‍🎤 Celebrity Detector Code
+* 🤖 QnA Engine Code
+* 🛣️ Routes Code
+* 💻 Application Code
 
 🐳 Containerization & Deployment:
 
-📄 Dockerfile
-📑 Kubernetes Deployment File
-
+* 📄 Dockerfile
+* 📑 Kubernetes Deployment File
 
 🔗 Version Control & CI/CD:
 
-🌍 Code versioning with GitHub
-🔁 CircleCI pipeline
-📦 Build & Push Image to Google Artifact Registry
-🚀 Deploy to Google Kubernetes Engine
-✅ Access deployed application on GKE
+* 🌍 Code versioning with GitHub
+* 🔁 CircleCI pipeline
+* 📦 Build & Push Image to Google Artifact Registry
+* 🚀 Deploy to Google Kubernetes Engine
+* ✅ Access deployed application on GKE
 
+---
 
 🎯 End Result:
 Upload an image → Get celebrity profile → Ask questions → Receive accurate answers in real time ⚡🎉
+
+---
+
+Do you want me to also add a **"How to Run Locally"** section with commands (like `docker build`, `docker run`, etc.) so others can quickly try it out on their machine?
