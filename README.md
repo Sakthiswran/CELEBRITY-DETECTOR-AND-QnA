@@ -12,10 +12,10 @@ The **Celebrity Detector and QnA** project allows you to upload a celebrity’s 
 
 ✨ Features:
 
-* 🧑‍🎤 Celebrity Detection → Upload an image and get details (name, profession, profile info, etc.).
-* 🗣️ QnA Engine → Ask questions about the detected celebrity and get accurate responses.
-* ☁️ Cloud Deployment → Fully containerized and deployed on **Google Kubernetes Engine (GKE)**.
-* 🔄 Automated CI/CD → Every code update triggers build, push, and deployment automatically.
+🧑‍🎤 Celebrity Detection → Upload an image and get details (name, profession, profile info, etc.).
+🗣️ QnA Engine → Ask questions about the detected celebrity and get accurate responses.
+☁️ Cloud Deployment → Fully containerized and deployed on **Google Kubernetes Engine (GKE)**.
+🔄 Automated CI/CD → Every code update triggers build, push, and deployment automatically.
 
 ---
 
@@ -35,25 +35,25 @@ The **Celebrity Detector and QnA** project allows you to upload a celebrity’s 
 
 ⚙️ Development Setup:
 
-* 📂 Project and API Setup
-* 🖼️ Image Handler Code
-* 🧑‍🎤 Celebrity Detector Code
-* 🤖 QnA Engine Code
-* 🛣️ Routes Code
-* 💻 Application Code
+📂 Project and API Setup
+🖼️ Image Handler Code
+🧑‍🎤 Celebrity Detector Code
+🤖 QnA Engine Code
+🛣️ Routes Code
+💻 Application Code
 
 🐳 Containerization & Deployment:
 
-* 📄 Dockerfile
-* 📑 Kubernetes Deployment File
+📄 Dockerfile
+📑 Kubernetes Deployment File
 
 🔗 Version Control & CI/CD:
 
-* 🌍 Code versioning with GitHub
-* 🔁 CircleCI pipeline
-* 📦 Build & Push Image to Google Artifact Registry
-* 🚀 Deploy to Google Kubernetes Engine
-* ✅ Access deployed application on GKE
+🌍 Code versioning with GitHub
+🔁 CircleCI pipeline
+📦 Build & Push Image to Google Artifact Registry
+🚀 Deploy to Google Kubernetes Engine
+✅ Access deployed application on GKE
 
 ---
 
