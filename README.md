@@ -1,9 +1,3 @@
-Perfect 🙂 Let’s make it more engaging with emojis while keeping it professional and fun for GitHub readers.
-
-Here’s your updated README content:
-
----
-
 # 🌟 Celebrity Detector and QnA 🎬🤖
 
 The **Celebrity Detector and QnA** project allows you to upload a celebrity’s image 📸 and get their profile automatically. Once the profile is retrieved, you can ask natural language questions ❓ about the celebrity, and the system will provide contextual answers powered by AI ⚡.
@@ -61,5 +55,3 @@ The **Celebrity Detector and QnA** project allows you to upload a celebrity’s 
 Upload an image → Get celebrity profile → Ask questions → Receive accurate answers in real time ⚡🎉
 
 ---
-
-Do you want me to also add a **"How to Run Locally"** section with commands (like `docker build`, `docker run`, etc.) so others can quickly try it out on their machine?
